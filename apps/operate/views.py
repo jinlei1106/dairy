@@ -5,10 +5,19 @@ from rest_framework.decorators import list_route
 
 from .models import Approval, Comment
 from dairy.serializers import DariyListSerializer
+from dairy.models import Daily
 
 
-class OperateViewSet(viewsets.ViewSet):
+class OperateViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Daily.objects.all()
+    serializer_class = DariyListSerializer
     permission_classes = (IsAuthenticated,)
+
+    def list(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_403_FORBIDDEN)
+
+    def retrieve(self, request, *args, **kwargs):
+        return Response({}, status=status.HTTP_403_FORBIDDEN)
 
     @list_route(methods=('get',))
     def approved(self, request):
@@ -16,7 +25,12 @@ class OperateViewSet(viewsets.ViewSet):
         qs = Approval.objects.filter(user=request.user)
         for q in qs:
             queryset.append(q.dairy)
-        serializer = DariyListSerializer(queryset, many=True)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
     @list_route(methods=('get',))
@@ -25,5 +39,10 @@ class OperateViewSet(viewsets.ViewSet):
         qs = Comment.objects.filter(user=request.user)
         for q in qs:
             queryset.append(q.dairy)
-        serializer = DariyListSerializer(queryset, many=True)
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

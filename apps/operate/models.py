@@ -11,7 +11,7 @@ class Approval(models.Model):
 
     class Meta:
         db_table = 'approval'
-        ordering = ('created',)
+        ordering = ('-created',)
 
 
 class Comment(models.Model):
@@ -22,4 +22,4 @@ class Comment(models.Model):
 
     class Meta:
         db_table = 'comment'
-        ordering = ('created',)
+        ordering = ('-created',)
