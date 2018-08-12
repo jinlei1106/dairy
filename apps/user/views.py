@@ -29,3 +29,8 @@ class UserViewSet(viewsets.ViewSet):
             return Response({'message': '用户名已被使用'}, status=status.HTTP_400_BAD_REQUEST)
         user = User.objects.create_user(username=username, password=password)
         return Response({'message': '用户 {0} 注册成功'.format(user.username)}, status=status.HTTP_200_OK)
+
+    @list_route()
+    def logout(self, request):
+        auth.logout(request)
+        return Response({'message': '登出成功'}, status=status.HTTP_200_OK)

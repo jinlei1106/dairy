@@ -4,13 +4,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import list_route
 
 from .models import Approval, Comment
-from dairy.serializers import DariyListSerializer
+from dairy.serializers import DairyListSerializer
 from dairy.models import Daily
 
 
 class OperateViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Daily.objects.all()
-    serializer_class = DariyListSerializer
+    serializer_class = DairyListSerializer
     permission_classes = (IsAuthenticated,)
 
     def list(self, request, *args, **kwargs):
